@@ -659,21 +659,21 @@ if(process.env.NODE_ENV === 'production') {
 // Dave tiene un codigo mas estructurado que este, pero hacer el cambio no lo quiero
 // hacer ahorita, estete codigo jala
 
-const whiteList = ['eljuanjo-dulces.herokuapp.com/', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
+// const whiteList = ['https://eljuanjo-dulces.herokuapp.com', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
 
-const corsOptions = {
-  credentials: true,
-  origin: (origin, callback) => {
-    if (whiteList.indexOf(origin) !== -1) {
-      callback (null, true);
-    }
-    else {
-      callback(new Error ('Not Allowed by CORS'));
-    }
-  },
-  optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   credentials: true,
+//   origin: (origin, callback) => {
+//     if (whiteList.indexOf(origin) !== -1) {
+//       callback (null, true);
+//     }
+//     else {
+//       callback(new Error ('Not Allowed by CORS'));
+//     }
+//   },
+//   optionsSuccessStatus: 200
+// }
+// app.use(cors(corsOptions));
 
 //  como dije es muy similar a app.get o app.post , etc
 // asi que defino la route a la cual quiero manejar las options, y lo quiero para 
