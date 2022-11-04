@@ -749,9 +749,14 @@ const sendErrorProd = (err, req, res) => {
     // Operational, trusted error: send message to the client
     if (err.isOperational) {
 
-      res.status(err.statusCode).render('error.pug', {
-        title: 'Something went wrong!', 
-        msg: err.message
+      // res.status(err.statusCode).render('error.pug', {
+      //   title: 'Something went wrong!', 
+      //   msg: err.message
+      // });
+      console.error('💥 ERRORRR!', err);
+      res.status(500).json ({
+        status: 'error',
+        message: 'Something went very wrong'
       });
     }
     // Programming or other unknown error: don’t leak error detail
@@ -760,9 +765,13 @@ const sendErrorProd = (err, req, res) => {
       console.error('💥 ERROR!', err);
 
       // 2. Send generic message
-      res.status(err.statusCode).render('error.pug', {
-        title: 'Something went wrong!', 
-        msg: 'Please try again later'
+      // res.status(err.statusCode).render('error.pug', {
+      //   title: 'Something went wrong!', 
+      //   msg: 'Please try again later'
+      // });
+      res.status(500).json ({
+        status: 'error',
+        message: 'Something went very wrong'
       });
     }
   }
