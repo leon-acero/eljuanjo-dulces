@@ -924,7 +924,7 @@ exports.login =  catchAsync (async (req, res, next) => {
 	// si no existe el User o el password es invalido
 	// status 401 es unauthorized
 	if (!userDocument || !(await userDocument.correctPassword (password, userDocument.password))) {
-		return next ( new AppError ('Incorrect email or password', 401));
+		return next ( new AppError ('El email o el password son incorrectos.', 401));
 	}
 
 	// 3. Si todo esta bien enviar el JSON Web Token al Client
