@@ -277,6 +277,14 @@ router
 				saleController.getUltimosCincoPedidosPorEntregar); 
 
 
+router
+	.route('/createBulkSale/:fechaInicio/:fechaFin')
+	.get( authController.protect, 
+				authController.restrictTo ('admin'), 
+				saleController.createBulkSale); 
+			
+			
+
 ///////////////////////////////////////////////////////////////////
 // Esta function me regesa de la BD un pedido en especifico
 // le mando el clientId y la fecha en que se creo el pedido

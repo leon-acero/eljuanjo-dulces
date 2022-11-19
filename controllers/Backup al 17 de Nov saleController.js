@@ -3,8 +3,6 @@ const {format} = require ('date-fns');
 const {ObjectId} = require('mongoose').Types;
 const Sale = require ('../models/saleModel');
 const Product = require('../models/productModel');
-const User = require('../models/userModel');
-const Client = require('../models/clientModel');
 const catchAsync = require('../Utils/catchAsync');
 const factory = require ('./handlerFactory');
 const AppError = require('../Utils/appError');
@@ -33,154 +31,6 @@ exports.setProductClientIds = (req, res, next) => {
     next();
 }
 
-function roll (min, max, floatFlag) {
-	const r = Math.random () *  (max - min) +  min;
-	return floatFlag  ? r  : Math.floor (r)
-}
-
-
-exports.createBulkSale = catchAsync ( async (req, res, next) => {
-	
-	const allProducts = await Product.find();
-	const allClients = await Client.find();
-	const user = await User.findById("5c8a1d5b0190b214360dc057");
-	// console.log("allClients", allClients);
-	// console.log("allProducts", allProducts);
-	console.log("user", user);
-
-	const { fechaInicio, fechaFin } = req.params;
-
-	console.log ("fecha", new Date(Date.now()));
-
-	const dateFechaInicio = new Date(fechaInicio);
-	const dateFechaFin = new Date(fechaFin);
-
-	console.log("dateFechaInicio", dateFechaInicio);
-	console.log("dateFechaFin", dateFechaFin);
-
-		// let contador = 0;
-
-		const allOrdersPerDay = [];
-		const arrayFechas = [];
-		
-		for (let i = dateFechaInicio; dateFechaInicio <= dateFechaFin; i.setDate(i.getDate() + 1)) {
-
-			// console.log("fecha_i", i);
-			const newFecha = new Date (i);
-			arrayFechas.push(newFecha);
-
-			// contador = contador + 1;
-			// console.log("contador", contador)
-			// const diaSiguiente = dateFechaInicio.getDate() + 1;
-			// console.log("fecha siguiente", new Date(diaSiguiente));
-
-			// if (i < dateFechaFin)
-			// 	console.log("aun no llego al dia final");
-			// // else if (i === dateFechaFin)
-			// else
-			// 	console.log("llegue al dia final");
-		}
-
-		// 1. ver si se aplica el descuento
-		// 2. usar el Promise.all
-		// 3, probar con un dia, dos dias, 5 dias, 10 dias, 30 dias, 2 meses, 6 meses, 12 meses
-
-		const allPedidosDelRangoDeFechas = Promise.all (arrayFechas.map( currentFecha => {
-
-		
-
-			// await Promise.all (allClients.map( async (currentClient) => {
-			// const allBasketsPerDay = Promise.all (allClients.map( async (currentClient) => {
-			const allBasketsPerDay = allClients.map( currentClient => {
-		
-				let theBasket = 
-				{
-					createdAt: new Date(Date.now()),
-					client: "",
-					businessName: "",
-					businessImageCover: "",
-					estatusPedido: 2,
-					user: "",
-					userName: "",
-					esMayorista: "",
-					seAplicaDescuento: false,
-					productOrdered: []
-				};
-
-				const descuento = roll(1, 6);
-
-				// console.log("descuento", descuento);
-				let bDescuento = false;
-				// let bDescuento = true;
-
-				if (descuento >= 1 && descuento <= 3)
-					bDescuento = false;
-				else if(descuento > 3 && descuento <= 6)
-					bDescuento = true;
-						
-				// console.log("bDescuento", bDescuento);
-				
-				// allProducts.forEach( async (currentProduct) => {
-				const productsOrdered = allProducts.map(currentProduct => {
-
-					const quantity = roll(1, 5);
-					// console.log("quantity", quantity);
-
-					const priceDeVenta = currentClient.esMayorista ? currentProduct.priceMayoreo	: currentProduct.priceMenudeo;
-					
-					return {
-						product: currentProduct._id,
-						productName: currentProduct.productName,
-						imageCover: currentProduct.imageCover,
-						quantity: quantity,
-						costo: currentProduct.costo,
-						priceDeVenta: priceDeVenta,
-						descuento: bDescuento ?
-							( priceDeVenta * quantity) * (10/100) : 0,
-						sku: currentProduct.sku
-					}
-				})
-
-				// la canasta de un cliente
-				theBasket = 
-				{
-					// createdAt: dateFechaInicio,
-					// createdAt: dateFechaInicio,
-					createdAt: currentFecha,
-					client: currentClient._id,
-					businessName: currentClient.businessName,
-					businessImageCover: currentClient.imageCover,
-					estatusPedido: 2,
-					// user: ObjectId("5c8a1d5b0190b214360dc057"),
-					user: user._id,
-					// userName: "Jonas Schmedtmann",
-					userName: user.name,
-					esMayorista: currentClient.esMayorista,
-					seAplicaDescuento: bDescuento,
-					productOrdered: productsOrdered
-				};
-
-				// console.log("theBasket", theBasket)
-				// const sale = await Sale.create(theBasket);
-				// await Sale.create(theBasket);
-				return Sale.create(theBasket);
-			})
-
-			// todas las canastas de un solo dia
-			return allOrdersPerDay.push(allBasketsPerDay);
-		}))
-		console.log("allPedidosDelRangoDeFechas", allPedidosDelRangoDeFechas);
-		const lists = await allPedidosDelRangoDeFechas;
-		console.log("lists", lists)
-		// console.log("allBasketsPerDay", allBasketsPerDay);
-		// const lists = await allBasketsPerDay;
-		// console.log("lists", lists)
-
-	res.status(201).json({
-		status: 'success',
-	});
-		
-});
 
 ///////////////////////////////////////////////////////////////////
 // Esta es la 3era Version para crear e Insertar pedidos y actualizar el Inventario
@@ -195,9 +45,6 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 	// Manejo de Error en Transaccion, me sirve para hacer Rollback
 	// si hago throw Error, hara un Rollback
 	let huboErrorEnTransaccion = false;
-
-	let numeroDeErrorTransaccion = 0;
-	let mensajeErrorTransaccion = "";
 
 	// Inicio la sesion que uso para la Transaccion
   const session = await mongoose.startSession();
@@ -293,25 +140,13 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 			console.log("allSale", allSale);
 
 			if (!allSale) {
-				if (!req.body.id) {
-					// Error al crear el Documento, osea el Pedido
-					numeroDeErrorTransaccion = 880;
-					mensajeErrorTransaccion = "Error al Insertar el Pedido";
-				}
-				else {
-					// Error al Actualizar, el Documento osea el Pedido no fue encontrado
-					// Probablemente fue borrado, ya no existe
-					numeroDeErrorTransaccion = 885;
-					mensajeErrorTransaccion = "Error al Actualizar, el Pedido no fue encontrado. Probablemente fue borrado antes de grabarlo."
-				}
 				huboErrorEnTransaccion = true;
 			}
 		
 			// console.log("allSale", allSale);
 			if (huboErrorEnTransaccion){
 				console.log("Hubo error al crear el Pedido, hare Roll Back");
-        // throw new Error ('Abortando Transaccion por Error en el Pedido');
-        throw new Error (mensajeErrorTransaccion);
+        throw new Error ('Abortando Transaccion por Error en el Pedido');
 			}
 		
 			// Termino de crear el pedido
@@ -358,9 +193,6 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 					// si no existe updatedInventario es que es null
 					// corto la Transaccion regreso Error
 					if (!updatedInventario) {
-						// Error al crear el Documento, osea el Pedido
-						numeroDeErrorTransaccion = 900;
-						mensajeErrorTransaccion = "Error al Actualizar el Inventario. Se cancela el Pedido. Vuelva a intentarlo.";
 						huboErrorEnTransaccion = true;
 					}
 					return updatedInventario;
@@ -376,8 +208,7 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 
 			if (huboErrorEnTransaccion){
 				console.log("Hubo error al actualizar inventario, hare Roll Back");
-        // throw new Error ('Abortando Transaccion por Error al actualizar Inventario');
-        throw new Error (mensajeErrorTransaccion);
+        throw new Error ('Abortando Transaccion por Error al actualizar Inventario');
 			}
 			else {
 				console.log("Transaccion Exitosa")
@@ -401,7 +232,6 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 		else {
 			console.log("El pedido y la actualizacion de Inventario fueron intencionalmente abortados.");
 			huboErrorEnTransaccion = true;
-			numeroDeErrorTransaccion = 910;
 			throw new Error ('Abortando Transaccion');
 		}
 	}
@@ -417,7 +247,7 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 	}
 
 	if (huboErrorEnTransaccion) {
-		return next(new AppError (mensajeErrorTransaccion, numeroDeErrorTransaccion));
+		return next(new AppError ('Hubo un error en la Transaccion se hizo Rollback', 999));
 	}
 });
 

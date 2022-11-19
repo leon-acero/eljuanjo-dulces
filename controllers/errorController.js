@@ -780,14 +780,17 @@ const sendErrorProd = (err, req, res) => {
 
 module.exports = (err, req, res, next) => { 
 
-  // console.log(err.stack);
+
+  // console.log("errorcin", err);
+  // console.log("errorcin.stack", err.stack);
 
 	// voy a definir un estatus de error default porque habra errores que nos 
   // llegaran sin estatus
 	// si esta definido el codigo de error se lo dejo de lo contrario le asigno de 
   // default 500 (Internal Server Error)
 
-  // console.log('err.statusCode', err.statusCode);
+  // console.log('errorcin.statusCode', err.statusCode);
+
 	err.statusCode = err.statusCode || 500;
 	// de igual forma defino el status
 	err.status = err.status || 'errorcin';

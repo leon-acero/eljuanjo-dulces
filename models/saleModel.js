@@ -54,6 +54,11 @@ const saleSchema = mongoose.Schema (
         default: false,
       },
 
+      businessImageCover: {
+        type: String,
+        default: 'defaultBusiness.jpg'
+      },
+
       // Array de Objects
       productOrdered: [
         {

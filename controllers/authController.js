@@ -924,6 +924,7 @@ exports.login =  catchAsync (async (req, res, next) => {
 	// si no existe el User o el password es invalido
 	// status 401 es unauthorized
 	if (!userDocument || !(await userDocument.correctPassword (password, userDocument.password))) {
+		// console.log("El email o el password son incorrectos")
 		return next ( new AppError ('El email o el password son incorrectos.', 401));
 	}
 
