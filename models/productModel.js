@@ -48,7 +48,7 @@ const productSchema = new mongoose.Schema(
     // podria guardar la imagen en la BD PERO eso NO es una buena idea
     imageCover: {
         type: String,
-        default: 'defaultProduct.jpg'
+        default: 'camera.webp'
     },
 
     // Es un timestamp en milisegundos que se configura en el momento en el que 

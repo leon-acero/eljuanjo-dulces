@@ -152,6 +152,8 @@ router
         productController.getAllProducts)
   .post(authController.protect, 
         authController.restrictTo ('admin'), 
+        productController.uploadProductPhoto,
+	  productController.resizeProductImages,
         productController.createProduct);
 
 
@@ -165,10 +167,11 @@ router
 	// Lecture-204 Uploading Multiple Images: Products
 	///////////////////////////////////////////////////////////////////
 	.patch(authController.protect, 
-				 authController.restrictTo ('admin'),
-				 productController.uploadProductPhoto,
-				 productController.resizeProductImages,
-				 productController.updateProduct)
+             authController.restrictTo ('admin'),
+             productController.uploadProductPhoto,
+             productController.resizeProductImages,
+             productController.updateSlugProduct,
+             productController.updateProduct)
   ///////////////////////////////////////////////////////////////////
   // Lecture-134 Authorization: User Roles And Permissions
   ///////////////////////////////////////////////////////////////////

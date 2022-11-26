@@ -1617,7 +1617,7 @@ exports.restrictTo = ( ...roles) =>
 		//		req.user = currentUser;
 		// y fijate que exoprts.protect se ejecuta antes de restrictTo
 
-		console.log("req.user", req.user);
+		// console.log("req.user", req.user);
 		if (!roles.includes(req.user.role)) {
 			// statusCode 403 Forbidden, no Authorized
 			return next (new AppError ('You do not have permission to perform this action', 403));

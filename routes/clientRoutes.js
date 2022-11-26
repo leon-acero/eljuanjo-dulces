@@ -173,6 +173,7 @@ router
 	       authController.restrictTo ('admin'),
 		 clientController.uploadClientPhoto,
 		 clientController.resizeClientImages,
+		 clientController.updateSlugClient,
 		 clientController.updateClient)
   ///////////////////////////////////////////////////////////////////
   // Lecture-134 Authorization: User Roles And Permissions

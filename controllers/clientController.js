@@ -62,8 +62,20 @@ const multer = require ('multer');
 const sharp = require ('sharp');
 */
 
+///////////////////////////////////////////////////////////////////
+// Guardo la foto osea imageCover en Memoria ya que antes de guardarla
+// en el disco duro del Web Server (File System) voy a darle
+// un Resize, a convertirlo a webP y a comprimir la foto para que
+// ocupe el menor espacio posible
+///////////////////////////////////////////////////////////////////
 const multerStorage = multer.memoryStorage();
 
+///////////////////////////////////////////////////////////////////
+// Me aseguro de solo aceptar archivos para imageCover que sean imagenes
+// de cualquier tipo, el usuario puede seleccionar cualquier tipo de imagen
+// de todos modos lo convertire a webP
+// Si el archivo no es imagen mando error
+///////////////////////////////////////////////////////////////////
 const multerFilter = (req, file, cb) => {
 
 	// uso el mimetype
@@ -75,6 +87,10 @@ const multerFilter = (req, file, cb) => {
 	}	
 }
 
+///////////////////////////////////////////////////////////////////
+// Defino como usare a multer, mandando llamar a multerStorage
+// y multerFilter
+///////////////////////////////////////////////////////////////////
 const upload = multer({
 	storage: multerStorage,
 	fileFilter: multerFilter
@@ -105,8 +121,42 @@ const upload = multer({
 // 	}
 // ]);
 
+///////////////////////////////////////////////////////////////////
+// Me encargo de subir una sola foto proveniente de req.body.photo
+// se llama photo porque asi lo escogi desde el Client.jsx del Client
+// o bien de NewClient.jsx
+///////////////////////////////////////////////////////////////////
 exports.uploadClientPhoto = upload.single('photo');
 
+
+///////////////////////////////////////////////////////////////////
+// Aqui me encargo de actualizar el slug, lo tengo que hacer aparte de
+// exports.updateClient = factory.updateOne(Client)
+// porque necesito usar findById y luego .save para ejeutar el metodo del slug
+// si lo hago con findByIdAndUpdate el .save NO se ejecuta
+///////////////////////////////////////////////////////////////////
+exports.updateSlugClient = catchAsync( async (req, res, next) => {
+
+	// const client = await Client.findOne( { sku: req.body.sku } );
+	const client = await Client.findById( { _id: req.body._id } );
+
+	// console.log("req.body", req.body)
+
+	if (!client) {
+		return next (new AppError ('El Cliente no existe' ,400));
+	}
+
+	// Si no hubo error entonces cambio el slug
+	client.businessName = req.body.businessName;
+	// console.log("client.businessName", client.businessName)
+	// actualizo el Producto
+
+	// Recuuerda que uso save y NO findOneAndUpdate porque con save puedo ejecitar 
+	// validaciones y PRE save middlewares, por ejemplo donde se encriptan los passwords
+	await client.save();
+
+	next();
+});
 
 /*
 En caso que no tuviera el imageCover y solo tuviera un field que aceptara multiples imagenes, lo pude hacer asi:
@@ -292,6 +342,12 @@ En clientController.js
 
 */
 
+///////////////////////////////////////////////////////////////////
+// Hago el resize de la foto
+// Convierto la imagen a webP
+// Guardo la imagen en el Web Server (File System)
+// Le pongo nombre a la imagen osea a imageCover 
+///////////////////////////////////////////////////////////////////
 exports.resizeClientImages = catchAsync( async (req, res, next) => {
 
 	// si tengo multiples archivos hago esto, req.files y no req.file
@@ -305,7 +361,8 @@ exports.resizeClientImages = catchAsync( async (req, res, next) => {
 	}
 
 	// req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-	req.file.filename = `client-${Date.now()}.jpeg`;
+	// req.file.filename = `client-${Date.now()}.jpeg`;
+	req.file.filename = `client-${Date.now()}.webp`;
 
 	// Si hago el Photo resizing uso el sharp package, desde la terminal
 	//	npm i sharp
@@ -324,11 +381,18 @@ exports.resizeClientImages = catchAsync( async (req, res, next) => {
 	// .jpeg para definir la calidad del jpeg, osea comprimirlo
 	// .toFile ahora si quiero escribir la imagen como archivo en el server, 
 	// aqui necesito el path completo del archivo
+	// await sharp( req.file.buffer)
+	// 			.resize(500, 500)
+	// 			// .toFormat('jpeg')
+	// 			.jpeg( {quality: 90, lossless: true } )
+	// 			.toFile(`client/public/img/clients/${req.file.filename}`);
+	// console.log("filename", req.file.filename)
 	await sharp( req.file.buffer)
 				.resize(500, 500)
-				// .toFormat('jpeg')
-				.jpeg( {quality: 90, lossless: true } )
-				.toFile(`client/public/img/clients/${req.file.filename}`);
+				.toFormat('webp')
+				.webp( {quality: 30 } )
+				.toFile(`./public/img/clients/${req.file.filename}`);				
+				// .toFile(`client/public/img/clients/${req.file.filename}`);				
 
 	// Actualizo el nombre de imageCover en la Collection Clients
 	// En el Middleware que sigue donde se actualiza toda la informacion del Cliente

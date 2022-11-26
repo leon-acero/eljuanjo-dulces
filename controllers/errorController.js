@@ -404,7 +404,7 @@ const handleCastErrorDB = error => {
   // es path que es el nombre del field que esta en el formato equivocado, 
   // y value es el valor incorrecto que se capturó
 
-	const message = `Invalid ${error.path}: ${error.value}`;
+	const message = `Inválido ${error.path}: ${error.value}`;
 
 	// 400 es Bad Request
 	return new AppError (message, 400);
@@ -498,7 +498,7 @@ const handleDuplicateFieldsDB = error => {
 	// const invalidValue = Object.values(error.keyValue)[0];
 	// console.log(invalidValue);
 
-	const message = `Duplicate field value: ${invalidValue}. Please use another value.`;
+	const message = `El dato capturado ya existe: ${invalidValue}. Por favor usa un valor único.`;
 
   // 400 es Bad Request
   return new AppError(message, 400);
@@ -566,9 +566,9 @@ Voy al errorController.js
 
 // En ES6 si solo voy a usar una linea NO tengo que poner {} ni return
 // en este caso esto seria return new AppError('Invalid token. Please log in again', 401);
-const handleJWTError = () => new AppError('Invalid token. Please log in again', 401);
+const handleJWTError = () => new AppError('Token inválido. Vuelve a iniciar sesión', 401);
 
-const handleJWTExpiredError = () => new AppError('Your token has expired. Please log in again!', 401);
+const handleJWTExpiredError = () => new AppError('El token ha expirado. Vuelve a iniciar sesión!', 401);
 
 
 const handleValidationErrorDB = error => {
@@ -576,7 +576,7 @@ const handleValidationErrorDB = error => {
   // como error.errors es un Object y NO un array USO Object.values
   // para iterar los valores de un Object
   const errorMessages = Object.values(error.errors).map(current => current.message);
-  const message = `Invalid input data ${errorMessages.join(' ')}`;
+  const message = `El dato capturado es inválido ${errorMessages.join(' ')}`;
 
 	return new AppError (message, 400);
 }
@@ -712,10 +712,16 @@ const sendErrorDev = (err, req, res) => {
     // /dev-data/templates/errorTemplate.pug
     console.error('💥 ERROR!', err);
 
-		res.status(err.statusCode).render('error.pug', {
-			title: 'Something went wrong!', 
-			msg: err.message
-		});
+		// res.status(err.statusCode).render('error.pug', {
+		// 	title: 'Something went wrong!', 
+		// 	msg: err.message
+		// });
+    res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack	
+    });
 	}
 }
 
