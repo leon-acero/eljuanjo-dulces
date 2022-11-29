@@ -1013,11 +1013,12 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 		},
 		{
 			$sort: {
-					"Semana": 1
+				"Anio": 1, "Semana": 1
 			}
 		}
 	]);
 
+	// console.log("ventasPorSemanaMongoDB", ventasPorSemanaMongoDB);
 
 	// Necesito obtener que dia es el 1 de Enero del año que me interesa
 	// osea necesito saber si es domingo, lunes, martes, etc.
@@ -1067,6 +1068,8 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 			SubTotal: current.subtotal
 		}
 	})
+
+	// console.log("ventasPorSemana", ventasPorSemana);
 
 	res.status(200)
 	.json( {
