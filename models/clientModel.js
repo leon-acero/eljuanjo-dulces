@@ -62,7 +62,7 @@ const clientSchema = new mongoose.Schema(
 
         imageCover: {
             type: String,
-            default: 'defaultBusiness.jpg'
+            default: 'camera.webp'
             // required: [true, 'El negocio debe tener una imagen.']
         },
 

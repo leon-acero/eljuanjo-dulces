@@ -157,6 +157,8 @@ router
 
   .post(authController.protect, 
         authController.restrictTo ('admin'),
+        clientController.uploadClientPhoto,
+	  clientController.resizeClientImages,
         clientController.createClient);
 
 
