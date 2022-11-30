@@ -493,6 +493,7 @@ const handleDuplicateFieldsDB = error => {
 	// aqui pongo la regular expression que busque en Google
 
   // las siguientes tres lineas funcionan
+  console.log("handleDuplicateFieldsDB. error.errmsg", error.errmsg);
 	const invalidValue = error.errmsg.match(/(["'])(\\?.)*?\1/)[0];
 	// const invalidValue = error.message.match(/(["'])(\\?.)*?\1/)[0];
 	// const invalidValue = Object.values(error.keyValue)[0];
@@ -801,6 +802,10 @@ module.exports = (err, req, res, next) => {
 	// de igual forma defino el status
 	err.status = err.status || 'errorcin';
 
+  // uso este if si quiero ver el mensaje que se manda en production tambien
+  // en development
+  // if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+
 	// y como se crea err.message?
 	if (process.env.NODE_ENV === 'development') {
 		sendErrorDev (err, req, res);
@@ -835,6 +840,8 @@ module.exports = (err, req, res, next) => {
 
 		sendErrorProd (error, req, res);
 	}
+
+  
 }
 
 /*

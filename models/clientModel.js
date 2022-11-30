@@ -33,10 +33,15 @@ const clientSchema = new mongoose.Schema(
             // minlength: [ 5, 'La dirección del negocio debe ser mayor o igual a 5 letras.']
         },  
 
+        // En el Client el cellPhone lo puse como opcional, asi que No puede
+        // ser required aqui en el server, ni tampoco unique, porque si le pongo
+        // vacio, osea sin valor, en el momento en que a otro cliente no le ponga
+        // dato del celular me va a rezongar el sistema porque se duplica
+        // el valor vacio
         cellPhone: { 
             type: String,
             // required: [true, 'Escribe el celular del Negocio.'],
-            unique: true,
+            // unique: true,
             trim: true,
             maxlength: [ 20, 'El número de celular del negocio no debe ser mayor a 20 caracteres.']
         },  
@@ -52,7 +57,7 @@ const clientSchema = new mongoose.Schema(
             type: String,
             // required: [true, 'Por favor escribe tu correo electrónico.'],
             lowercase: true,
-            validate: [validator.isEmail, 'Por favor escribe un correo electrónico válido.']
+            // validate: [validator.isEmail, 'Por favor escribe un correo electrónico válido.']
         },
 
         esMayorista: {
