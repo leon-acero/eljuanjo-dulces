@@ -493,8 +493,25 @@ const handleDuplicateFieldsDB = error => {
 	// aqui pongo la regular expression que busque en Google
 
   // las siguientes tres lineas funcionan
-  console.log("handleDuplicateFieldsDB. error.errmsg", error.errmsg);
-	const invalidValue = error.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  // console.log("handleDuplicateFieldsDB. error.errmsg", error.errmsg);
+  // console.log("handleDuplicateFieldsDB. error.message", error.message);
+  // console.log("handleDuplicateFieldsDB. Object.values(error.keyValue)[0]", Object.values(error.keyValue)[0]);
+
+	// const invalidValue = error.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+	let invalidValue = "";
+
+  if (error.errmsg.match(/(["'])(\\?.)*?\1/) !== null) {
+    // Obtiene el dato que hay entre comillas
+	  invalidValue = error.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  }
+  else {
+    // Obtiene el dato que hay entre curly braces
+    // incluye los curly braces
+    invalidValue = error.errmsg.match(/{(.*?)}/)[0];
+    // Sin incluir los curly braces
+    //  invalidValue = error.errmsg.match(/[^{}]+(?=})/g)[0];
+  }
+  
 	// const invalidValue = error.message.match(/(["'])(\\?.)*?\1/)[0];
 	// const invalidValue = Object.values(error.keyValue)[0];
 	// console.log(invalidValue);
@@ -809,7 +826,6 @@ module.exports = (err, req, res, next) => {
 	// y como se crea err.message?
 	if (process.env.NODE_ENV === 'development') {
 		sendErrorDev (err, req, res);
-
 	}
 	else if (process.env.NODE_ENV === 'production') {
 		// necesito crear una HardCopy de err porque la voy a usar para crear el 
