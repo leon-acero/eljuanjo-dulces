@@ -588,6 +588,7 @@ const handleJWTError = () => new AppError('Token inválido. Vuelve a iniciar ses
 
 const handleJWTExpiredError = () => new AppError('El token ha expirado. Vuelve a iniciar sesión!', 401);
 
+const handleMongooseServerSelectionError = () => new AppError('Error al conectarse. Primero revisa tu conexión a Internet: Tu Wi-Fi o si tienes saldo, o una conexión lenta pueden ser los problemas, si estas en un lugar con mala recepción de red. O bien problemas con el servidor y/o la Base de Datos.', 400);
 
 const handleValidationErrorDB = error => {
 	
@@ -730,6 +731,12 @@ const sendErrorDev = (err, req, res) => {
     // /dev-data/templates/errorTemplate.pug
     console.error('💥 ERROR!', err);
 
+    // console.log("err.statusCode", err.statusCode);
+    // console.log("err.status", err.status);
+    // console.log("err", err);
+    // console.log("err.message", err.message);
+    // console.log("err.stack", err.stack);
+
 		// res.status(err.statusCode).render('error.pug', {
 		// 	title: 'Something went wrong!', 
 		// 	msg: err.message
@@ -761,6 +768,7 @@ const sendErrorProd = (err, req, res) => {
       // 1. Log to the console
       console.error('💥 ERROR!', err);
 
+
       // 2. Send generic message
       res.status(500).json ({
         status: 'error',
@@ -778,6 +786,8 @@ const sendErrorProd = (err, req, res) => {
       //   msg: err.message
       // });
       console.error('💥 ERRORRR!', err);
+
+
       res.status(500).json ({
         status: 'error',
         message: 'Something went very wrong'
@@ -787,6 +797,7 @@ const sendErrorProd = (err, req, res) => {
     else {
       // 1. Log to the console
       console.error('💥 ERROR!', err);
+
 
       // 2. Send generic message
       // res.status(err.statusCode).render('error.pug', {
@@ -833,6 +844,8 @@ module.exports = (err, req, res, next) => {
 		// let error = { ...err };
 		let error = Object.assign(err);
 
+    // if (error.MongooseServerSelectionError)
+
 		// este es el manejo de errores para lo que manda Mongoose y que hasta ahora 
     // no manejo
 		//le paso como argumento el err que Mongoose Creo
@@ -853,6 +866,9 @@ module.exports = (err, req, res, next) => {
 
     if(error.constructor.name === 'TokenExpiredError')
       error = handleJWTExpiredError ();
+    
+    if(error.constructor.name === 'MongooseServerSelectionError')
+      error = handleMongooseServerSelectionError ();
 
 		sendErrorProd (error, req, res);
 	}
