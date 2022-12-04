@@ -1331,7 +1331,8 @@ console.log("dirname", __dirname);
 // Y aqui con el * le digo que cuando le lleue cualquier request lo va a redireccionar a este path
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
+  // res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '/', 'index.html'));
 });
 
 ///////////////////////////////////////////////////////////////////
