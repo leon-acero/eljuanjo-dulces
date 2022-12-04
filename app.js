@@ -1323,16 +1323,18 @@ app.use('/api/v1/sales', saleRouter); // a esto se llama Mounting the Router
 // Para el Deployment
 // Uso este middleware para decirle a mi Express App que voy a usar el directorio client como mi static folder, osea que usare archivos de html, css y js dentro de client
 
-app.use(express.static(path.join(__dirname, '/client/build')));
+console.log("dirname", __dirname);
+
+// app.use(express.static(path.join(__dirname, '/client/build')));
+
 
 // Y aqui con el * le digo que cuando le lleue cualquier request lo va a redireccionar a este path
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
-// });
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/build', 'index.html'));
+  // res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '/public', 'index.html'));
 });
+
 ///////////////////////////////////////////////////////////////////
 
 

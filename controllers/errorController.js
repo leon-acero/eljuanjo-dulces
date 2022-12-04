@@ -772,7 +772,7 @@ const sendErrorProd = (err, req, res) => {
       // 2. Send generic message
       res.status(500).json ({
         status: 'error',
-        message: 'Something went very wrong'
+        message: 'Something went very wrong 1'
       });
     }
   }
@@ -790,7 +790,8 @@ const sendErrorProd = (err, req, res) => {
 
       res.status(500).json ({
         status: 'error',
-        message: 'Something went very wrong'
+        message: 'Something went very wrong 2',
+        theError: err
       });
     }
     // Programming or other unknown error: don’t leak error detail
@@ -806,7 +807,8 @@ const sendErrorProd = (err, req, res) => {
       // });
       res.status(500).json ({
         status: 'error',
-        message: 'Something went very wrong'
+        message: 'Something went very wrong 3',
+        theError: err
       });
     }
   }
