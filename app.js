@@ -661,7 +661,7 @@ if(process.env.NODE_ENV === 'production') {
 
 if(process.env.NODE_ENV === 'development') { 
     
-    const whiteList = ['https://eljuanjo-dulces.onrender.com', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
+    const whiteList = ['https://eljuanjo-dulceria.onrender.com', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
 
     const corsOptions = {
       credentials: true,
@@ -1326,14 +1326,19 @@ app.use('/api/v1/sales', saleRouter); // a esto se llama Mounting the Router
 console.log("dirname", __dirname);
 
 // app.use(express.static(path.join(__dirname, '/client/build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Y aqui con el * le digo que cuando le lleue cualquier request lo va a redireccionar a este path
 
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
+// });
+
 app.get('*', (req, res) => {
-  // res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
-  res.sendFile(path.join(__dirname, '/public', 'tour.html'));
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
+
 
 ///////////////////////////////////////////////////////////////////
 
