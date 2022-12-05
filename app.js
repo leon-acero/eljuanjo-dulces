@@ -659,7 +659,7 @@ if(process.env.NODE_ENV === 'production') {
 // Dave tiene un codigo mas estructurado que este, pero hacer el cambio no lo quiero
 // hacer ahorita, estete codigo jala
 
-// if(process.env.NODE_ENV === 'development') { 
+if(process.env.NODE_ENV === 'development') { 
     
     const whiteList = ['https://eljuanjo-dulceria.onrender.com', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
 
@@ -680,7 +680,7 @@ if(process.env.NODE_ENV === 'production') {
     }
     app.use(cors(corsOptions));
 
-// }
+}
 
 
 //  como dije es muy similar a app.get o app.post , etc
