@@ -1,8 +1,5 @@
 node_modules/
 *.env
 .parcel-cache/
-public/img/products/
-public/img/clients/
-public/img/users/
 public/js
 public/js/bundled
