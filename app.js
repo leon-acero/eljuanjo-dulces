@@ -659,7 +659,7 @@ if(process.env.NODE_ENV === 'production') {
 // Dave tiene un codigo mas estructurado que este, pero hacer el cambio no lo quiero
 // hacer ahorita, estete codigo jala
 
-if(process.env.NODE_ENV === 'development') { 
+// if(process.env.NODE_ENV === 'development') { 
     
     const whiteList = ['https://eljuanjo-dulceria.onrender.com', 'http://127.0.0.1:3000', 'http://localhost:3000', 'http://127.0.0.1:8000', 'http://localhost:8000'];
 
@@ -680,7 +680,7 @@ if(process.env.NODE_ENV === 'development') {
     }
     app.use(cors(corsOptions));
 
-}
+// }
 
 
 //  como dije es muy similar a app.get o app.post , etc
@@ -1323,7 +1323,7 @@ app.use('/api/v1/sales', saleRouter); // a esto se llama Mounting the Router
 // Para el Deployment
 // Uso este middleware para decirle a mi Express App que voy a usar el directorio client como mi static folder, osea que usare archivos de html, css y js dentro de client
 
-console.log("dirname", __dirname);
+// console.log("dirname", __dirname);
 
 // app.use(express.static(path.join(__dirname, '/client/build')));
 app.use(express.static(path.join(__dirname, 'public')));
