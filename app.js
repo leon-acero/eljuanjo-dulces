@@ -669,7 +669,7 @@ if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'productio
         
         console.log("originSS", origin);
         
-        if (whiteList.indexOf(origin) !== -1) {
+        if (whiteList.indexOf(origin) !== -1 || !origin) {
           callback (null, true);
         }
         else {
