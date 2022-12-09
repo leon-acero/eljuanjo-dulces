@@ -36,6 +36,7 @@ const clientRouter = require('./routes/clientRoutes');
 const saleRouter = require('./routes/saleRoutes');
 
 
+
 ///////////////////////////////////////////////////////////////////
 // Lecture-155 Creating And Getting Reviews
 ///////////////////////////////////////////////////////////////////
@@ -823,7 +824,7 @@ Este limiter viene siendo un Middleware function
 
 // MIDDLEWARE: LIMIT REQUESTS FROM SAME /API
 const limiter = rateLimit ( { 
-	max: 100,
+	max: 200,
 	windowMs: 60 * 60 * 1000,
 	message: 'Too many requests from this IP, please try again in an hour'
 });
@@ -1334,11 +1335,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
 // });
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
-
 
 ///////////////////////////////////////////////////////////////////
 
@@ -1390,7 +1389,23 @@ app.all('*', (req, res, next) => {
   // Lecture-115 Better Errors and Refactoring
   ///////////////////////////////////////////////////////////////////
 	next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+
+  // res.status(404)
+
+  // if (req.accepts('html')) {
+  //     res.sendFile(path.join(__dirname, 'views', '404.html'))
+  // } 
+  // else if (req.accepts('json')) {
+  //     res.json({ message: '404 Not Found' })
+  // } 
+  // else {
+  //     res.type('txt').send('404 Not Found')
+  // }
 });
+
+
+
+
 
 
 ///////////////////////////////////////////////////////////////////

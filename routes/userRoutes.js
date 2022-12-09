@@ -113,7 +113,11 @@ router
 ///////////////////////////////////////////////////////////////////
 // Lecture-202 Resizing Images
 ///////////////////////////////////////////////////////////////////
-router.patch('/updateMe', userController.uploadUserPhoto, userController.resizeUserPhoto, userController.updateMe);
+router.patch('/updateMe', 
+							userController.uploadUserPhoto, 
+							userController.uploadImageToCloudinary,
+							// userController.resizeUserPhoto, 
+							userController.updateMe);
 
 
 

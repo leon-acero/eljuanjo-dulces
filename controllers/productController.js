@@ -1,5 +1,6 @@
 const multer = require ('multer');
 const sharp = require ('sharp');
+const cloudinary = require('../Utils/cloudinary')
 
 const Product = require('../models/productModel');
 // const APIFeatures = require('../Utils/apiFeatures')
@@ -81,7 +82,7 @@ const multerFilter = (req, file, cb) => {
 		cb (null, true);
 	}
 	else {
-		cb ( new AppError ('Not an image! Please upload only', 400), false);
+		cb ( new AppError ('El archivo no es una imagen! Solo usa imágenes por favor.', 400), false);
 	}	
 }
 
@@ -128,6 +129,42 @@ exports.updateSlugProduct = catchAsync( async (req, res, next) => {
 	// Recuuerda que uso save y NO findOneAndUpdate porque con save puedo ejecitar 
 	// validaciones y PRE save middlewares, por ejemplo donde se encriptan los passwords
 	await product.save();
+
+	next();
+});
+
+///////////////////////////////////////////////////////////////////
+// Hago el upload de la foto a Cloudinary, ahora los procesos de resize
+// los hago en Cloudinary, ya no es necesario usar el sharp package
+// Convierto la imagen a webP
+// Guardo la imagen en el Web Server (File System)
+// Le pongo nombre a la imagen osea a imageCover 
+///////////////////////////////////////////////////////////////////
+exports.uploadImageToCloudinary = catchAsync( async (req, res, next) => {
+
+	if (!req.file) {
+		return next();
+	}
+
+	// uploadRes tiene los detalles de la imagen, width, height, url
+	// subo la imagen a Cloudinary
+
+	// Hago la conversión a base64 para poder subir la imagen a Cloudinary
+	const imageBase64 = req.file.buffer.toString('base64');
+	const uploadStr = `data:${req.file.mimetype};base64,${imageBase64}`;
+
+	const uploadRes = await cloudinary.uploader.upload (uploadStr,
+		{
+			upload_preset: 'onlineElJuanjoProducts'
+		}
+	);
+
+	// Actualizo el nombre de imageCover en la Collection Clients
+	// En el Middleware que sigue donde se actualiza toda la informacion del Cliente
+	// se actualizara el imageCover
+	if (uploadRes) {
+		req.body.imageCover = uploadRes.secure_url;
+	}
 
 	next();
 });

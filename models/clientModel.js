@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const validator = require('validator');
+// const validator = require('validator');
 
 ///////////////////////////////////////////////////////////////////
 // Modelling The Clients
@@ -67,7 +67,8 @@ const clientSchema = new mongoose.Schema(
 
         imageCover: {
             type: String,
-            default: 'camera.webp'
+            default: ''
+            // default: 'camera.webp'
             // required: [true, 'El negocio debe tener una imagen.']
         },
 

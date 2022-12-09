@@ -84,7 +84,7 @@ const multerFilter = (req, file, cb) => {
 		cb (null, true);
 	}
 	else {
-		cb ( new AppError ('El archivo no es una imagen! Solo usa imágenes por favor.', 400), false);
+		cb ( new AppError ('Not an image! Please upload only', 400), false);
 	}	
 }
 
@@ -352,32 +352,24 @@ En clientController.js
 ///////////////////////////////////////////////////////////////////
 exports.uploadImageToCloudinary = catchAsync( async (req, res, next) => {
 
-	if (!req.file) {
-		return next();
+	if (req.body.imageCover) {
+
+		// uploadRes tiene los detalles de la imagen, width, height, url
+		// subo la imagen a Cloudinary
+		const uploadRes = await cloudinary.uploader.upload (req.body.imageCover,
+			{
+				upload_preset: 'onlineElJuanjoClients'
+			});
+
+		// Actualizo el nombre de imageCover en la Collection Clients
+		// En el Middleware que sigue donde se actualiza toda la informacion del Cliente
+		// se actualizara el imageCover
+		// req.body.imageCover = req.file.filename;
+		if (uploadRes)
+			req.body.imageCover = uploadRes.secure_url;
 	}
-
-	// uploadRes tiene los detalles de la imagen, width, height, url
-	// subo la imagen a Cloudinary
-
-	// Hago la conversión a base64 para poder subir la imagen a Cloudinary
-	const imageBase64 = req.file.buffer.toString('base64');
-	const uploadStr = `data:${req.file.mimetype};base64,${imageBase64}`;
-
-	const uploadRes = await cloudinary.uploader.upload (uploadStr,
-		{
-			upload_preset: 'onlineElJuanjoClients'
-		}
-	);
-
-	// Actualizo el nombre de imageCover en la Collection Clients
-	// En el Middleware que sigue donde se actualiza toda la informacion del Cliente
-	// se actualizara el imageCover
-	if (uploadRes) {
-		req.body.imageCover = uploadRes.secure_url;
-	}
-
+	
 	next();
-
 });
 
 ///////////////////////////////////////////////////////////////////

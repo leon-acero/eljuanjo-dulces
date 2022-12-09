@@ -158,7 +158,8 @@ router
   .post(authController.protect, 
         authController.restrictTo ('admin'),
         clientController.uploadClientPhoto,
-	  clientController.resizeClientImages,
+	//   clientController.resizeClientImages,
+        clientController.uploadImageToCloudinary,
         clientController.createClient);
 
 
@@ -174,7 +175,8 @@ router
 	.patch(authController.protect, 
 	       authController.restrictTo ('admin'),
 		 clientController.uploadClientPhoto,
-		 clientController.resizeClientImages,
+		//  clientController.resizeClientImages,
+             clientController.uploadImageToCloudinary,
 		 clientController.updateSlugClient,
 		 clientController.updateClient)
   ///////////////////////////////////////////////////////////////////

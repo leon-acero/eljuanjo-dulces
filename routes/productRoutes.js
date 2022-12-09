@@ -152,7 +152,8 @@ router
   .post(authController.protect, 
         authController.restrictTo ('admin'), 
         productController.uploadProductPhoto,
-	  productController.resizeProductImages,
+	//   productController.resizeProductImages,
+	  productController.uploadImageToCloudinary,
         productController.createProduct);
 
 
@@ -168,7 +169,8 @@ router
 	.patch(authController.protect, 
              authController.restrictTo ('admin'),
              productController.uploadProductPhoto,
-             productController.resizeProductImages,
+            //  productController.resizeProductImages,
+             productController.uploadImageToCloudinary,
              productController.updateSlugProduct,
              productController.updateProduct)
   ///////////////////////////////////////////////////////////////////
