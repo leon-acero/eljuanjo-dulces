@@ -169,14 +169,21 @@ module.exports = class Email {
 				}
 			});
 		}
-  	return nodemailer.createTransport ({
-			host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      auth: {  
-          user: process.env.EMAIL_USERNAME,
-          pass: process.env.EMAIL_PASSWORD
-      }
-		});		
+		return nodemailer.createTransport({
+			service: 'SendGrid',
+			auth: {
+				user: process.env.SENDGRID_USERNAME,
+				pass: process.env.SENDGRID_PASSWORD
+			}
+		});
+  	// return nodemailer.createTransport ({
+		// 	host: process.env.EMAIL_HOST,
+    //   port: process.env.EMAIL_PORT,
+    //   auth: {  
+    //       user: process.env.EMAIL_USERNAME,
+    //       pass: process.env.EMAIL_PASSWORD
+    //   }
+		// });		
 	}
 
 	// este es el metodo que enviara el email y recibicra un template y el subject
@@ -211,6 +218,7 @@ module.exports = class Email {
 				url: this.url,
 				subject
 			});
+
 			// ahora para el welcome email que el pug template en el folder /views/emails y 
 			// el nombre del archivo sera welcome.pug
 
@@ -266,7 +274,7 @@ module.exports = class Email {
 	}
 
   async sendPasswordReset () {
-		if (await this.send('passwordReset', 'Your password reset token (valid for only 10 minutes)'))
+		if (await this.send('passwordReset', 'Tu solicitud para cambiar de password de El Juanjo | Dulcería (solo válido por 10 minutos)'))
 			return true;
 
 		return false;

@@ -58,6 +58,7 @@ app.enable('trust proxy');
 //////////////////////////////////////////////////////////////////
 
 // app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 
 // el path que pongo aqui es relativo al directory donde ejecutamos el Node App y 
 // usualmente es el root project folder pero puede que no sea asi asi que es mejor 

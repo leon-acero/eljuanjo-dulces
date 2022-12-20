@@ -881,7 +881,7 @@ exports.login =  catchAsync (async (req, res, next) => {
 	if (!email || !password) {
 		// si no existen mandar un mensaje de error al Client, usando AppError para que el
 		// Global Handling Middleware mande el error al Client
-		return next (new AppError ('Please provide email and password', 400));
+		return next (new AppError ('Por favor captura el correo electrónico y/o password', 400));
 		
 	}
 		
@@ -1764,12 +1764,16 @@ const sendEmail = require(‘../Utils/email’);
 exports.forgotPassword =  catchAsync( async (req, res, next) => {
 	// 1. Get user based on POSTed email
 	// Uso findOne no findById porque no conozco el User Id y el usuario tampoco sabe su Id 
-	const user = await User.findOne( { email: req.body.email } );
+
+	const { email, urlEncoded } = req.body;
+
+	// const user = await User.findOne( { email: req.body.email } );
+	const user = await User.findOne( { email: email } );
 
 	// Verifico si el User se encontró
 	if (!user) {
 		// 404 statusCode Not Found
-		return next ( new AppError('There is no user with that email address', 404 ) );
+		return next ( new AppError('No existe un usuario con ese correo electrónico.', 404 ) );
 	}
 
 	// 2. Generate the random token
@@ -1908,7 +1912,11 @@ try {
 
 	// const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 	// const resetURL = '127.0.0.1:8000/resetPasswordForm';
-	const resetURL = `${req.protocol}://${req.get('host')}/resetPasswordForm/${resetToken}`;
+	// const resetURL = `${req.protocol}://${req.get('host')}/resetPasswordForm/${resetToken}`;
+
+	// Este es el link de la pagina de Reset Password que se manda al correo del
+	// Usuario, la página es de ReactJS y como necesito el URL, viene en urlEncoded
+	const resetURL = `${urlEncoded}/reset-password/${resetToken}`;
 	// const resetURL = `${req.protocol}://${req.get('host')}/resetPasswordForm`;
 
 
@@ -1920,12 +1928,19 @@ try {
 		problemWithEmail = false;
 
 
+	let message = "";
+
+	if (problemWithEmail)
+		message = "Hubo un error al enviar el token al correo electrónico"
+	else
+		message = "El token fue enviado al correo electrónico"
   // NO DEBO ENVIAR EL TOKEN POR AQUI osea dentro de JSON, sino cualquiera podria darle 
 	// reset al password de cualquiera y controlar la cuenta, para eso mande el email 
 	// con el token SIN encriptar 
   res.status(200).json({
     status: 'success',
-    message: 'Token sent to email',
+    // message: 'Token sent to email',
+    message,
 		problemWithEmail: problemWithEmail
   });
 } catch (err) {
@@ -1939,7 +1954,7 @@ try {
   await user.save( { validateBeforeSave: false } );
 
   // el statusCode es 500 porque es un error en el server
-  return next (new AppError ('There was an error sending the email. Try again later', 500));
+  return next (new AppError ('Hubo un error al enviar el correo electrónico. Vuelva a intentar más tarde', 500));
 }
 
 // aun asi tengo que manejar si pasa un error al usar el metodo sendEmail y entonces 
@@ -2019,6 +2034,7 @@ exports.resetPassword =  catchAsync( async (req, res, next) => {
 */
 	const hashedResetToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
 
+	
 	// Ahora obtengo el User basado en el reset Token porque este token es lo unico que 
 	// sobre el User en este momento, no tengo email, nada, asi que este reset token que 
 	// puede identificar al User y con esto puedo darle query a la BD
@@ -2034,7 +2050,7 @@ exports.resetPassword =  catchAsync( async (req, res, next) => {
 	// 2. If token has not expired && there is a user : set the New Password
 	// Mando un error si no se encontro el User o si el reset Token expiró
 	if (!user) {
-		return next (new AppError ('Token is invalid or has expired' ,400));
+		return next (new AppError ('El Token es inválido o ha expirado' ,400));
 	}
 
 	// Si no hubo error entonces cambio el password y hago confirmPassword, estos datos 
@@ -2115,6 +2131,9 @@ Es un small hack
 			user
 		}
 	});
+
+	// res.render("resetPasswordFormHTML", { email: verify.email, status: "verified" });
+
 
 /*
 Voy a POSTMAN a probarlo a /forgot Password
