@@ -169,14 +169,24 @@ module.exports = class Email {
 				}
 			});
 		}
+
 		return nodemailer.createTransport({
-			service: 'SendGrid',
+			service: 'SendinBlue',
 			auth: {
-				user: process.env.SENDGRID_USERNAME,
-				pass: process.env.SENDGRID_PASSWORD
+				user: process.env.SENDINBLUE_USERNAME,
+				pass: process.env.SENDINBLUE_PASSWORD
 			}
 		});
-  	// return nodemailer.createTransport ({
+
+		// return nodemailer.createTransport({
+		// 	service: 'SendGrid',
+		// 	auth: {
+		// 		user: process.env.SENDGRID_USERNAME,
+		// 		pass: process.env.SENDGRID_PASSWORD
+		// 	}
+		// });
+  	
+		// return nodemailer.createTransport ({
 		// 	host: process.env.EMAIL_HOST,
     //   port: process.env.EMAIL_PORT,
     //   auth: {  

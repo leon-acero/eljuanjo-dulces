@@ -273,7 +273,7 @@ router
 router
 	.route('/ultimos-cinco-pedidos-por-entregar/:clientId')
 	.get( authController.protect, 
-				authController.restrictTo ('admin'),
+				authController.restrictTo ('admin', 'vendedor'),
 				saleController.getUltimosCincoPedidosPorEntregar); 
 
 
@@ -295,7 +295,7 @@ router
 router
 	.route('/update-order/client/:clientId/fecha/:fecha')
 	.get( authController.protect, 
-				authController.restrictTo ('admin'),
+				authController.restrictTo ('admin', 'vendedor'),
 				saleController.getUpdateOrderClientFecha); 
 
 

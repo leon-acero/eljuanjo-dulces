@@ -229,3 +229,15 @@ exports.resizeProductImages = catchAsync( async (req, res, next) => {
 	
 	next();
 });
+
+
+exports.aliasProductByProductName = (req, res, next) => {
+	
+	req.query = {
+		productName: {
+			regex: `(?i)${req.params.byProductName}`
+		},
+		sort: 'productName'
+	}
+	next(); 
+}

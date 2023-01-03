@@ -180,6 +180,16 @@ router
           authController.restrictTo('admin'),
           productController.deleteProduct);
 
+///////////////////////////////////////////////////////////////////
+// Hago la búsqueda de un producto usando su nombre
+  
+router
+      .route('/search-product/:byProductName')
+      .get( authController.protect, 
+            authController.restrictTo ('admin', 'vendedor'),
+            productController.aliasProductByProductName, 
+            productController.getAllProducts)
+
 
 // ahora exporto el router para impotarlo en app.js
 // cuando solo tengo una cosa que exportar hago asi

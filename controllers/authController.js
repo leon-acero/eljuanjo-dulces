@@ -1067,7 +1067,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 		// Ahora checo el si Token que me llega del Client en verdad Existe
 		if (!token) {
 			// 401 unauthorized
-			return next (new AppError('You are not logged in. Please log in to get access', 401));
+			return next (new AppError('No has iniciado sesión. Por favor inicia sesión para tener acceso.', 401));
 		}
 		// Vuelvo a probar en POSTMAN, le quito el AUTHORIZATION HEADER y me 
 		// regresa mensaje de Error,
@@ -1620,7 +1620,7 @@ exports.restrictTo = ( ...roles) =>
 		// console.log("req.user", req.user);
 		if (!roles.includes(req.user.role)) {
 			// statusCode 403 Forbidden, no Authorized
-			return next (new AppError ('You do not have permission to perform this action', 403));
+			return next (new AppError ('No tienes permiso o el rol para realizar esta acción.', 403));
 		}
 		next();
 	}
@@ -2290,7 +2290,7 @@ En userRoutes.js
 	// Checo que se encontró el User en la collection && checo que
 	// el password que mandó el User coincida con el password de la BD
 	if (!user || !(await user.correctPassword (req.body.oldPassword, user.password))) {
-		return next (new AppError('Your current password is wrong', 404));
+		return next (new AppError('Tu password actual esta equivocado.', 404));
 	}
 
 /*

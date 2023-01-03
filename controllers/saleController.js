@@ -128,6 +128,9 @@ exports.createBulkSale = catchAsync ( async (req, res, next) => {
 
 					const priceDeVenta = currentClient.esMayorista ? currentProduct.priceMayoreo	: currentProduct.priceMenudeo;
 					
+					// Este 10/100 significa que es el 10% lo dejo hardcodeado porque este
+					// metodo solo es para generar datos de prueba, este metodo NO se usa
+					// en production
 					return {
 						product: currentProduct._id,
 						productName: currentProduct.productName,
