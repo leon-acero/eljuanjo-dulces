@@ -236,6 +236,8 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 			req.body.clientId = undefined;
 	}
 
+	// convierto quantity de string a number haciendo *=1
+	// y lo necesito para hacer los cálculos
 	if (req.body.productOrdered) {
 		req.body.productOrdered.forEach(current => {
 			if (current.quantity) { 
@@ -281,6 +283,7 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 				allSale = await Sale.create([req.body], {session});
 			}
 			else {
+				// actualizo el Pedido
 				allSale = await Sale.findByIdAndUpdate(
 					req.body.id, 
 					req.body, 
@@ -293,7 +296,7 @@ exports.createOrUpdateSaleAndInventory = catchAsync (async (req, res, next) => {
 			}
 			/////////////////////////////////////////////////////
 
-			console.log("allSale", allSale);
+			// console.log("allSale", allSale);
 
 			if (!allSale) {
 				if (!req.body.id) {
@@ -1564,6 +1567,115 @@ exports.getUltimosCincoPedidosPorEntregar = catchAsync(async (req, res, next) =>
 		}
 	});
 });
+
+///////////////////////////////////////////////////////////////////
+// generaTicket me crea el Ticket que se manda al cliente por medio 
+// de WhatsApp, Email o Impresora
+///////////////////////////////////////////////////////////////////
+exports.getTicketFromServer = catchAsync (async (req, res, next) => {
+
+	const { orderId } = req.params;
+
+	const ticketDeVenta = await Sale.aggregate([
+		// Stage 1
+		{
+			$match: {
+				 _id: { "$eq": ObjectId(`${orderId}`) }  					
+			}
+		},
+		// Stage 2
+		{
+			$unwind: {
+					path: "$productOrdered"
+			}
+		},
+		// Stage 3
+		{
+			$project: {
+					createdAt: 1,
+					client: 1,
+					businessName: 1,
+					seAplicaDescuento: 1,
+					_id: 1,
+					"productOrdered.productName": 1,
+					"productOrdered.sku": 1,
+					"productOrdered.priceDeVenta": 1,
+					"productOrdered.quantity": 1,
+					"productOrdered.descuento": 1,
+					// subTotal: { $sum:{ $multiply: [ "$productOrdered.priceDeVenta", "$productOrdered.quantity" ] } },
+					// descuento: { $sum: "$productOrdered.descuento" },
+					total: { $subtract: [ { $sum:{ $multiply: [ "$productOrdered.priceDeVenta", "$productOrdered.quantity" ] } },  { $sum: "$productOrdered.descuento" } ] },					
+			}
+		},	
+		// Stage 4
+		{
+			$group: {
+					_id: {
+									orderId: "$_id",
+									cliente: "$client",
+									negocio: "$businessName",
+									seAplicaDescuento: "$seAplicaDescuento",
+									sku: "$productOrdered.sku",
+									productName: "$productOrdered.productName",
+									quantity: "$productOrdered.quantity",
+									priceDeVenta: "$productOrdered.priceDeVenta",
+									total: "$total",
+							 },
+								ventaProducto: { $sum:{ $multiply: [ "$productOrdered.priceDeVenta", "$productOrdered.quantity" ] } },
+								descuentoProducto: { $sum: "$productOrdered.descuento" },
+								TotalProducto: {
+									$sum: "$productOrdered.quantity"
+								}
+			},											
+		},
+		// Stage 5
+		{
+			$group: {
+							_id:"$_id.orderId",
+
+							clientInfo: {
+								$first: {
+									client: "$_id.cliente",
+									businessName: "$_id.negocio",
+									seAplicaDescuento: "$_id.seAplicaDescuento"
+								}
+							},						 
+							productOrdered:
+											{
+													$push:
+																{
+																	sku:"$_id.sku",
+																	productName: "$_id.productName",
+																	quantity: "$_id.quantity",
+																	priceDeVenta: "$_id.priceDeVenta",
+																	subTotal:"$ventaProducto",
+																	descuento:"$descuentoProducto",
+																	total:"$_id.total"																		
+																}
+											},
+							TotalVenta:{$sum:"$ventaProducto"},
+							TotalDescuento:{$sum:"$descuentoProducto"},
+							TotalProducto: {$sum: "$TotalProducto"},
+			}
+		},
+		// Stage 6
+		{
+			$addFields: {
+					 TotalPedido: { $subtract: [ "$TotalVenta", "$TotalDescuento" ] }
+			}
+		},
+	]);
+
+	// console.log ("ticketDeVenta", ticketDeVenta);
+	res.status(200)
+	.json( {
+		status: 'success',
+		data: {
+			ticketDeVenta
+		}
+	});
+});
+
 
 
 ///////////////////////////////////////////////////////////////////

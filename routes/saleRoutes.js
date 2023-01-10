@@ -299,6 +299,23 @@ router
 				saleController.getUpdateOrderClientFecha); 
 
 
+
+///////////////////////////////////////////////////////////////////
+// /whole-year-sales/:year
+// 
+// Cargo las Ventas de la Dulceria de un solo año, para eso le mando
+// el param :year
+// i.e. /whole-year-sales/2022 
+// Me regresa
+// 2022 Ventas: $300,000
+///////////////////////////////////////////////////////////////////
+router
+.route('/ticket-from-server/:orderId')
+.get(authController.protect, 
+		 authController.restrictTo ('admin', 'vendedor'),
+		 saleController.getTicketFromServer); 
+
+
 // ahora exporto el router para impotarlo en app.js
 // cuando solo tengo una cosa que exportar hago asi
 module.exports = router;
