@@ -68,7 +68,7 @@ app.set('view engine', 'ejs');
 
 // app.set('views', path.join(__dirname, 'views'));
 
-
+console.log("1")
 // // 1. PRIMERO PONGO LOS MIDDLEWARES
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -1237,7 +1237,7 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   // 
   // console.log('req.headers', req.headers);
-
+  console.log("Het")
   ///////////////////////////////////////////////////////////////////
   // Lecture-189 Logging in Users with Our API - Part 1
   ///////////////////////////////////////////////////////////////////
@@ -1294,7 +1294,7 @@ app.use((req, res, next) => {
 // });
 
 // Como tour.pug(helme) no existe, lo creo en el folder views
-
+console.log("mmm")
 ///////////////////////////////////////////////////////////////////
 // Lecture-181 Setting Up The Project Structure
 ///////////////////////////////////////////////////////////////////
