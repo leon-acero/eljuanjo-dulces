@@ -1374,7 +1374,7 @@ y me manda este resultado
 
 app.all('*', (req, res, next) => {
 
-  Console.log("404 Error Pagina NO Hallada");
+  console.log("404 Error Pagina NO Hallada");
 	// res.status(404).json({
 	// 	status: 'fail',
 	// 	message: `Can't find ${req.originalUrl} on this server`
