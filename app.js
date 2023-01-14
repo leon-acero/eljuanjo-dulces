@@ -68,7 +68,7 @@ app.set('view engine', 'ejs');
 
 // app.set('views', path.join(__dirname, 'views'));
 
-console.log("1")
+
 // // 1. PRIMERO PONGO LOS MIDDLEWARES
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -1237,7 +1237,7 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   // 
   // console.log('req.headers', req.headers);
-  console.log("Het")
+
   ///////////////////////////////////////////////////////////////////
   // Lecture-189 Logging in Users with Our API - Part 1
   ///////////////////////////////////////////////////////////////////
@@ -1294,7 +1294,7 @@ app.use((req, res, next) => {
 // });
 
 // Como tour.pug(helme) no existe, lo creo en el folder views
-console.log("mmm")
+
 ///////////////////////////////////////////////////////////////////
 // Lecture-181 Setting Up The Project Structure
 ///////////////////////////////////////////////////////////////////
@@ -1320,7 +1320,7 @@ app.use('/api/v1/clients', clientRouter); // a esto se llama Mounting the Router
 
 app.use('/api/v1/sales', saleRouter); // a esto se llama Mounting the Router
 
-console.log("nnn")
+
 ///////////////////////////////////////////////////////////////////
 // Para el Deployment
 // Uso este middleware para decirle a mi Express App que voy a usar el directorio client como mi static folder, osea que usare archivos de html, css y js dentro de client
@@ -1336,13 +1336,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
 // });
-
-console.log("2")
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-console.log("3")
 ///////////////////////////////////////////////////////////////////
 
 
@@ -1373,8 +1370,6 @@ y me manda este resultado
 */
 
 app.all('*', (req, res, next) => {
-
-  console.log("404 Error Pagina NO Hallada");
 	// res.status(404).json({
 	// 	status: 'fail',
 	// 	message: `Can't find ${req.originalUrl} on this server`
@@ -1394,19 +1389,19 @@ app.all('*', (req, res, next) => {
   ///////////////////////////////////////////////////////////////////
   // Lecture-115 Better Errors and Refactoring
   ///////////////////////////////////////////////////////////////////
-	// next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+	next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 
-  res.status(404)
+  // res.status(404)
 
-  if (req.accepts('html')) {
-      res.sendFile(path.join(__dirname, 'views', '404.html'))
-  } 
-  else if (req.accepts('json')) {
-      res.json({ message: '404 Not Found' })
-  } 
-  else {
-      res.type('txt').send('404 Not Found')
-  }
+  // if (req.accepts('html')) {
+  //     res.sendFile(path.join(__dirname, 'views', '404.html'))
+  // } 
+  // else if (req.accepts('json')) {
+  //     res.json({ message: '404 Not Found' })
+  // } 
+  // else {
+  //     res.type('txt').send('404 Not Found')
+  // }
 });
 
 

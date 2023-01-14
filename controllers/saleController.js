@@ -925,7 +925,13 @@ exports.getWeeklySales = catchAsync(async (req, res, next) => {
 // el primer dia de la semana, osea el Domingo
 // y asi formar la semana i.e. 10-Ene (Domingo) al 16-Ene (Sabado)
 const getSundayFromWeekNum = (weekNum, year) => {
-	const sunday = new Date(year, 0, (1 + (weekNum - 1) * 7));
+	// const sunday = new Date(year, 0, (1 + (weekNum - 1) * 7));
+
+	// console.log("weekNum", weekNum);
+	// console.log("year", year);
+	// console.log("((weekNum) * 7)", (weekNum * 7));
+
+	const sunday = new Date(year, 0, (weekNum * 7));
 	while (sunday.getDay() !== 0) {
 		sunday.setDate(sunday.getDate() - 1);
 	}
@@ -939,7 +945,15 @@ const getSundayFromWeekNum = (weekNum, year) => {
 // el primer dia de la semana, osea el Sabado
 // y asi formar la semana i.e. 10-Ene (Domingo) al 16-Ene (Sabado)
 const getSaturdayFromWeekNum = (weekNum, year) => {
-	const saturday = new Date(year, 0, (1 + (weekNum - 1) * 7));
+	// console.log("weekNum", weekNum);
+	// console.log("year", year);
+	// console.log("(1 + (weekNum) * 7)", (weekNum * 7));
+
+	// const saturday = new Date(year, 0, (1 + (weekNum - 1) * 7));
+	const saturday = new Date(year, 0, (weekNum * 7));
+
+	// console.log("saturday", saturday);
+
 	while (saturday.getDay() !== 6) {
 		saturday.setDate(saturday.getDate() + 1);
 	}
@@ -985,7 +999,11 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 	// como la variable end es un string, tengo que convertirlo a Fecha
 	// y luego agregarle un dia
 	const newEnd = new Date(end);
+	// Para MongoDB NECESITO agregar un dia extra, es cosa de MongoDB para calcular con fechas
 	const endPlusOneDay = new Date (newEnd.getTime() + (1 * 86400000))
+
+	// Para JavaScript a diferencia de MongoDB NO necesito agregar un dia, lo dejo tal cual
+	// const endDayForNodeJS = new Date (newEnd.getTime())
 	
 	// estatusPedido, donde 1 es Por Entregar y 2 es Entregado
 
@@ -1026,6 +1044,11 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 
 	// console.log("ventasPorSemanaMongoDB", ventasPorSemanaMongoDB);
 
+	// Comentarize bastante codigo porque hacia malabares con las fechas sobre todo porque usaba
+	// la fecha de MongoDB y ahi hay que aumentar un dia, y eso lo replique aqui en NodeJS
+	// y veo que fue demasiado, al parecer no era necesario, asi comentarice mucho codigo de
+	// este metodo y de getSundayFromWeekNum y getSaturdayFromWeekNum
+
 	// Necesito obtener que dia es el 1 de Enero del año que me interesa
 	// osea necesito saber si es domingo, lunes, martes, etc.
 	// porque? Porque voy a usar en la consulta de MongoDB una function
@@ -1035,8 +1058,8 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 	// Si el dia primero del año cae en Domingo entonces es one based
 	// De lo contrario es zero based
 
-	const primerDiaDelAnioStart = new Date(newStart.getUTCFullYear(), 0, 1);
-	const primerDiaDelAnioEnd   = new Date(endPlusOneDay.getUTCFullYear(), 0, 1);
+	// const primerDiaDelAnioStart = new Date(newStart.getUTCFullYear(), 0, 1);
+	// const primerDiaDelAnioEnd   = new Date(endDayForNodeJS.getUTCFullYear(), 0, 1);
 
 
 	// si getDay() es cero quiere que decir que el primer dia del año es
@@ -1045,29 +1068,41 @@ exports.getWeeklyRangeSales = catchAsync(async (req, res, next) => {
 	// por lo que si es zero based le sumare 1
 	// console.log("primerDiaDelAnioStart", primerDiaDelAnioStart);
 	// console.log("getDay",primerDiaDelAnioStart.getDay())
+	
+	// console.log("primerDiaDelAnioEnd", primerDiaDelAnioEnd);
+	// console.log("getDay-End",primerDiaDelAnioEnd.getDay())
 
-	let sumaUnoStart = false;
-	let sumaUnoEnd = false;
+	// let sumaUnoStart = false;
+	// let sumaUnoEnd = false;
+
 
 	// este if dice su el dia primero del año NO es cero entonces
 	// es zero based y necesito sumar un 1 a la Semana que regresa
 	// la API
-	if (primerDiaDelAnioStart.getDay() !== 0) {
-		sumaUnoStart = true;
-	}
+	// if (primerDiaDelAnioStart.getDay() !== 0) {
+	// 	sumaUnoStart = true;
+	// }
 
-	if (primerDiaDelAnioEnd.getDay() !== 0) {
-		sumaUnoEnd = true;
-	}
+	// if (primerDiaDelAnioEnd.getDay() !== 0) {
+	// 	sumaUnoEnd = true;
+	// }
 
 	let totalAcumulado = 0;
 	const ventasPorSemana = ventasPorSemanaMongoDB.map(current=> {
-							
+		
+		// console.log("current", current);
 		totalAcumulado += current.subtotal;
 
-		const firstDay = getSundayFromWeekNum(sumaUnoStart ? current.Semana + 1 : current.Semana, current.Anio);
+		// const firstDay = getSundayFromWeekNum(sumaUnoStart ? current.Semana + 1 : current.Semana, current.Anio);
+		const firstDay = getSundayFromWeekNum(current.Semana, current.Anio);
 
-		const lastDay = getSaturdayFromWeekNum(sumaUnoEnd ? current.Semana + 1 : current.Semana, current.Anio);
+		// console.log("sumaUnoEnd", sumaUnoEnd);
+		// console.log("current.Semana", current.Semana);
+		// const lastDay = getSaturdayFromWeekNum(sumaUnoEnd ? current.Semana + 1 : current.Semana, current.Anio);
+		const lastDay = getSaturdayFromWeekNum(current.Semana, current.Anio);
+
+		// console.log("firstDay", firstDay)
+		// console.log("lastDay", lastDay)
 
 		return {
 			name: `${firstDay} - ${lastDay}`,
