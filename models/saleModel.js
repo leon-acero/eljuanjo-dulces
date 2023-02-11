@@ -114,6 +114,16 @@ const saleSchema = mongoose.Schema (
   }
 );
 
+///////////////////////////////////////////////////////////////////
+// Lecture-167 Improving Read Performance with Indexes
+///////////////////////////////////////////////////////////////////
+
+// 1 significa que el index esta en ascending order, -1 significa descending order, 
+// hay otros tipos de indexes como para texto y geospatial data
+
+// Este index me ayuda para los Reportes, es decir cuando hago aggregations!
+saleSchema.index ( { createdAt: 1 });
+
 // model('Sale'...
 // como NO existe una Collection al inicio, entonces mongoose la crea
 // y usa ese primer parametro 'Sale', para nombrar la Collection
