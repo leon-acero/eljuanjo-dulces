@@ -2642,14 +2642,14 @@ exports.logout = (req, res, next) => {
 	// que expire en 10 segundos
 	// y tambien que sea httpOnly:true
 	// pero en este caso no necesito hacerla tan seguro porque no mando datos sensibles
-	// console.log("logout");
-	// console.log("1");
-	// console.log(req.secure || req.headers ['x-forwarded-proto'] === 'https')
+	console.log("logout");
+	console.log("1");
+	console.log(req.secure || req.headers ['x-forwarded-proto'] === 'https')
 
-	// if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
-	// 	console.log("secure es true")
-	// else
-	// 	console.log("secure es false")
+	if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
+		console.log("secure es true")
+	else
+		console.log("secure es false")
 
 	if(process.env.NODE_ENV === 'production') { 
 		res.cookie ('jwt', 'loggedout', 
@@ -2663,7 +2663,7 @@ exports.logout = (req, res, next) => {
 				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https'
 			});
 
-			// console.log("loggingout prod");
+			console.log("loggingout prod");
 	
 	}
 	if(process.env.NODE_ENV === 'development') { 
@@ -2675,7 +2675,7 @@ exports.logout = (req, res, next) => {
 				expires: new Date(0),
 				httpOnly: true,
 			});
-			// console.log("loggingout dev");
+			console.log("loggingout dev");
 	}
 	
 	res.status(200).json({ status: 'success' });
