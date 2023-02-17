@@ -2643,6 +2643,8 @@ exports.logout = (req, res, next) => {
 	// y tambien que sea httpOnly:true
 	// pero en este caso no necesito hacerla tan seguro porque no mando datos sensibles
 	console.log("logout");
+	console.log("1");
+	console.log(req.secure || req.headers ['x-forwarded-proto'] === 'https')
 
 	if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
 		console.log("secure es true")
