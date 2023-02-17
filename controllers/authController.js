@@ -2642,7 +2642,7 @@ exports.logout = (req, res, next) => {
 	// que expire en 10 segundos
 	// y tambien que sea httpOnly:true
 	// pero en este caso no necesito hacerla tan seguro porque no mando datos sensibles
-	console.log("logout");
+	console.log("logout...");
 	console.log("1");
 	console.log(req.secure || req.headers ['x-forwarded-proto'] === 'https')
 
@@ -2660,7 +2660,7 @@ exports.logout = (req, res, next) => {
 				expires: new Date(0),
 				httpOnly: true,
 				sameSite: 'None',
-				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https',
+				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https'
 			});
 
 			console.log("loggingout prod");
