@@ -249,6 +249,11 @@ const createSendToken = (user, statusCode, req, res, problemWithEmail = false) =
 	// console.log('createSendToken');
 	// console.log('token', token);
 
+	if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
+		console.log("secure es true")
+	else
+		console.log("secure es false")
+
 	if(process.env.NODE_ENV === 'production') { 
 		res.cookie('jwt', token, { 
 			expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
@@ -2652,7 +2657,8 @@ exports.logout = (req, res, next) => {
 				// ahora lo cambie a CERO segundos
 				expires: new Date(0),
 				httpOnly: true,
-				sameSite: 'None'
+				sameSite: 'None',
+				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https'
 			});
 
 			console.log("loggingout prod");
