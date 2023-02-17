@@ -2660,7 +2660,7 @@ exports.logout = (req, res, next) => {
 				expires: new Date(0),
 				httpOnly: true,
 				sameSite: 'None',
-				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https'
+				secure: req.secure || req.headers ['x-forwarded-proto'] === 'https',
 			});
 
 			console.log("loggingout prod");
