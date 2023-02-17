@@ -249,11 +249,6 @@ const createSendToken = (user, statusCode, req, res, problemWithEmail = false) =
 	// console.log('createSendToken');
 	// console.log('token', token);
 
-	if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
-		console.log("secure es true")
-	else
-		console.log("secure es false")
-
 	if(process.env.NODE_ENV === 'production') { 
 		res.cookie('jwt', token, { 
 			expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
@@ -2648,6 +2643,11 @@ exports.logout = (req, res, next) => {
 	// y tambien que sea httpOnly:true
 	// pero en este caso no necesito hacerla tan seguro porque no mando datos sensibles
 	console.log("logout");
+
+	if (req.secure || req.headers ['x-forwarded-proto'] === 'https')
+		console.log("secure es true")
+	else
+		console.log("secure es false")
 
 	if(process.env.NODE_ENV === 'production') { 
 		res.cookie ('jwt', 'loggedout', 
